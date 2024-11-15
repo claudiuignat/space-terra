@@ -19,3 +19,19 @@ resource "aws_key_pair" "ec2_key" {
   key_name   = "my-key-pair"
   public_key = file("~/.ssh/id_rsa.pub") # Replace with your SSH public key path
 }
+# Launch an EC2 instance
+resource "aws_instance" "my_ec2_instance" {
+  ami           = "ami-0c02fb55956c7d316" # Replace with your desired AMI ID
+  instance_type = "t2.micro"
+  key_name      = aws_key_pair.ec2_key.key_name
+  security_groups = [aws_security_group.ec2_sg.name]
+
+  root_block_device {
+    volume_size = 8
+    encrypted   = true # Enable AES encryption for the root volume
+  }
+
+  tags = {
+    Name = "My-AES-Instance"
+  }
+}
